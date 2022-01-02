@@ -1,0 +1,24 @@
+{{define "home"}}
+<!DOCTYPE html>
+<html lang="en">
+  {{template "head"}}
+  <body>
+    {{template "header" .PageTitle}}
+    <main>
+      {{ range.Blocks }}
+      <section>
+        <ul>
+          <li>Data : {{.Data}}</li>
+          <li>Hash : {{.Hash}}</li>
+          {{if .PrevHash}}
+            <li>Previous Hash : {{.PrevHash}}</li>
+          {{end}}
+        </ul>
+        <hr />
+      </section>
+      {{ end }}
+    </main>
+    {{template "footer"}}
+  </body>
+</html>
+{{end}}
