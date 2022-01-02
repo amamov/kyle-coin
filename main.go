@@ -1,6 +1,10 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/amamov/kyle-coin/cat"
+)
 
 func plus(a, b int, name string) (int, string) {
 	return a + b, name
@@ -80,4 +84,7 @@ func main() {
 	fmt.Println(kyle.age)
 	kyle.sayHello()
 
+	yss := cat.Cat{}
+	yss.SetDetails("kyle", 12)
+	fmt.Println(yss)
 }
