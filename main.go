@@ -1,7 +1,7 @@
 package main
 
-import "github.com/amamov/kyle-coin/explorer"
+import "github.com/amamov/kyle-coin/restapi"
 
 func main() {
-	explorer.Start()
+	restapi.Start(4000)
 }
