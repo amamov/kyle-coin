@@ -12,11 +12,16 @@ const templateDir string = "explorer/templates/"
 var templates *template.Template
 
 func Start(portNumber int) {
+	handler := http.NewServeMux()
 	port := fmt.Sprintf(":%d", portNumber)
+
 	templates = template.Must(template.ParseGlob(templateDir + "pages/*.gohtml"))
 	templates = template.Must(templates.ParseGlob(templateDir + "partials/*.gohtml"))
-	http.HandleFunc("/", HomeController)
-	http.HandleFunc("/add", AddBlockController)
+
+	handler.HandleFunc("/", HomeController)
+	handler.HandleFunc("/add", AddBlockController)
+
 	fmt.Printf("Listening on http://localhost%s\n", port)
-	log.Fatal(http.ListenAndServe(port, nil))
+
+	log.Fatal(http.ListenAndServe(port, handler))
 }

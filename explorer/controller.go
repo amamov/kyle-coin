@@ -25,6 +25,8 @@ func AddBlockController(rw http.ResponseWriter, r *http.Request) {
 		blockData := r.Form.Get("blockData")
 		blockchain.GetBlockChain().AddBlock(blockData)
 		http.Redirect(rw, r, "/", http.StatusPermanentRedirect)
+	default:
+		rw.WriteHeader(http.StatusMethodNotAllowed)
 	}
 
 }

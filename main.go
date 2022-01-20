@@ -6,6 +6,6 @@ import (
 )
 
 func main() {
-	explorer.Start(3000)
+	go explorer.Start(3000)
 	restapi.Start(4000)
 }

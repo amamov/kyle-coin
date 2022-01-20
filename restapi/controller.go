@@ -4,9 +4,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/amamov/kyle-coin/blockchain"
 	"github.com/amamov/kyle-coin/utils"
+	"github.com/gorilla/mux"
 )
 
 type url string
@@ -32,6 +34,10 @@ type blockBodyForAdd struct {
 	Message string
 }
 
+type errorResponse struct {
+	ErrorMessage string `json:"errorMessage"`
+}
+
 func documentation(rw http.ResponseWriter, r *http.Request) {
 	data := []urlDescription{
 		{
@@ -41,17 +47,22 @@ func documentation(rw http.ResponseWriter, r *http.Request) {
 		},
 		{
 			URL:         url("/blocks"),
+			Method:      "GET",
+			Description: "See All Blocks",
+		},
+		{
+			URL:         url("/blocks"),
 			Method:      "POST",
 			Description: "Add A Block",
 			Payload:     "message:string",
 		},
 		{
-			URL:         url("/blocks/{id}"),
-			Method:      "POST",
+			URL:         url("/blocks/{height}"),
+			Method:      "GET",
 			Description: "See A Block",
 		},
 	}
-	rw.Header().Add("Content-Type", "application/json")
+	// rw.Header().Add("Content-Type", "application/json") // 미들웨어로 뺌
 	// json.NewEncoder(rw).Encode(data) // 밑에 3줄을 한 줄로 쓴다면
 
 	b, err := json.Marshal(data) // Marshal : JSON으로 인코딩한 interface를 return한다.
@@ -64,7 +75,6 @@ func documentation(rw http.ResponseWriter, r *http.Request) {
 func blocks(rw http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
-		rw.Header().Add("Content-Type", "application/json")
 		json.NewEncoder(rw).Encode(blockchain.GetBlockChain().AllBlocks())
 	case "POST":
 		var blockBody blockBodyForAdd
@@ -73,4 +83,18 @@ func blocks(rw http.ResponseWriter, r *http.Request) {
 		blockchain.GetBlockChain().AddBlock(blockBody.Message)
 		rw.WriteHeader(http.StatusCreated) // 201
 	}
+}
+
+func block(rw http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	height, err := strconv.Atoi(vars["height"]) // str -> int 변환
+	utils.HandleErr(err)
+	block, err := blockchain.GetBlockChain().GetBlock(height)
+	jsonEncoder := json.NewEncoder(rw)
+	if err == blockchain.NotFoundError {
+		jsonEncoder.Encode(errorResponse{fmt.Sprint(err)})
+	} else {
+		jsonEncoder.Encode(block)
+	}
+
 }
