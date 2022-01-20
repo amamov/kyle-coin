@@ -78,8 +78,8 @@ func blocks(rw http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func Start(aPort int) {
-	port = fmt.Sprintf(":%d", aPort)
+func Start(portNumber int) {
+	port = fmt.Sprintf(":%d", portNumber)
 	http.HandleFunc("/", documentation)
 	http.HandleFunc("/blocks", blocks)
 	fmt.Printf("Listening on http://localhost%s\n", port)
