@@ -7,14 +7,12 @@ import (
 	"text/template"
 )
 
-const (
-	port        string = ":4000"
-	templateDir string = "explorer/templates/"
-)
+const templateDir string = "explorer/templates/"
 
 var templates *template.Template
 
-func Start() {
+func Start(portNumber int) {
+	port := fmt.Sprintf(":%d", portNumber)
 	templates = template.Must(template.ParseGlob(templateDir + "pages/*.gohtml"))
 	templates = template.Must(templates.ParseGlob(templateDir + "partials/*.gohtml"))
 	http.HandleFunc("/", HomeController)
