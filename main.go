@@ -1,11 +1,7 @@
 package main
 
-import (
-	"github.com/amamov/kyle-coin/explorer"
-	"github.com/amamov/kyle-coin/restapi"
-)
+import "github.com/amamov/kyle-coin/cli"
 
 func main() {
-	go explorer.Start(3000)
-	restapi.Start(4000)
+	cli.Start()
 }
