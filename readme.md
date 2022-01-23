@@ -2,6 +2,6 @@
 
 > build kyle coin on blockchain
 
-## tack stack
+## tech stack
 
 - Go lang
