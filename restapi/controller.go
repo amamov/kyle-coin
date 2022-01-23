@@ -30,7 +30,7 @@ type urlDescription struct {
 // 	return ""
 // }
 
-type blockBodyForAdd struct {
+type blockBodyForAppend struct {
 	Message string
 }
 
@@ -38,7 +38,7 @@ type errorResponse struct {
 	ErrorMessage string `json:"errorMessage"`
 }
 
-func documentation(rw http.ResponseWriter, r *http.Request) {
+func getDocsController(rw http.ResponseWriter, req *http.Request) {
 	data := []urlDescription{
 		{
 			URL:         url("/"),
@@ -72,29 +72,27 @@ func documentation(rw http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(rw, "%s", b)
 }
 
-func blocks(rw http.ResponseWriter, r *http.Request) {
-	switch r.Method {
-	case "GET":
-		json.NewEncoder(rw).Encode(blockchain.GetBlockChain().AllBlocks())
-	case "POST":
-		var blockBody blockBodyForAdd
-		utils.HandleErr(json.NewDecoder(r.Body).Decode(&blockBody))
-		// fmt.Println(blockBody)
-		blockchain.GetBlockChain().AddBlock(blockBody.Message)
-		rw.WriteHeader(http.StatusCreated) // 201
-	}
+func appendBlockController(rw http.ResponseWriter, req *http.Request) {
+	var blockBody blockBodyForAppend
+	utils.HandleErr(json.NewDecoder(req.Body).Decode(&blockBody))
+	// fmt.Println(blockBody)
+	blockchain.GetBlockChain().AddBlock(blockBody.Message)
+	rw.WriteHeader(http.StatusCreated) // 201
 }
 
-func block(rw http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
+func getBlocksController(rw http.ResponseWriter, req *http.Request) {
+	json.NewEncoder(rw).Encode(blockchain.GetBlockChain().AllBlocks())
+}
+
+func getBlockController(rw http.ResponseWriter, req *http.Request) {
+	vars := mux.Vars(req)
 	height, err := strconv.Atoi(vars["height"]) // str -> int 변환
 	utils.HandleErr(err)
 	block, err := blockchain.GetBlockChain().GetBlock(height)
 	jsonEncoder := json.NewEncoder(rw)
 	if err == blockchain.NotFoundError {
-		jsonEncoder.Encode(errorResponse{fmt.Sprint(err)})
+		jsonEncoder.Encode(errorResponse{ErrorMessage: fmt.Sprint(err)})
 	} else {
 		jsonEncoder.Encode(block)
 	}
-
 }

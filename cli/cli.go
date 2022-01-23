@@ -18,12 +18,16 @@ func exitProgram() {
 	os.Exit(0)
 }
 
-func showInitialConsole() {
+func helpDisplayConsole() {
 	fmt.Printf("Welcome to Kyle Coin\n\n")
 	fmt.Printf("Pleast use the following flags\n\n")
 	fmt.Printf("-port=4000:		Set the PORT of the server\n")
 	fmt.Printf("-mode=%s:		Start the REST API\n", REST_API_MODE)
 	fmt.Printf("-mode=%s:		Start the HTML explorer\n\n", HTML_MODE)
+}
+
+func defaultConsole() {
+	helpDisplayConsole()
 	exitProgram()
 }
 
@@ -31,9 +35,9 @@ func Start() {
 	// fmt.Println(os.Args)
 	// fmt.Println(reflect.TypeOf(os.Args)) // []string
 
-	flag.Parse()
 	port := flag.Int("port", 4000, "Set port of the server")
 	mode := flag.String("mode", REST_API_MODE, fmt.Sprintf("Choose between '%s' and '%s'", REST_API_MODE, HTML_MODE))
+	flag.Parse()
 
 	switch *mode {
 	case REST_API_MODE:
@@ -41,10 +45,6 @@ func Start() {
 	case HTML_MODE:
 		explorer.Start(*port)
 	default:
-		showInitialConsole()
+		defaultConsole()
 	}
-
-	fmt.Println(*port, *mode)
-
-	// 리팩토링 필요
 }

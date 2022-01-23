@@ -1,13 +1,13 @@
-{{define "add"}}
+{{define "block"}}
 <!DOCTYPE html>
 <html lang="en">
   {{template "head"}}
   <body>
     {{template "header" "Add Block"}}
     <main>
-      <form method="POST" action="/add">
+      <form method="POST" action="/block">
         <input type="text" placeholder="Data for your block" required name="blockData" />
-        <button type="submit">Add Block</button>
+        <button type="submit">Append Block</button>
       </form>
     </main>
     {{template "footer"}}

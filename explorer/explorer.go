@@ -19,9 +19,9 @@ func Start(portNumber int) {
 	templates = template.Must(templates.ParseGlob(templateDir + "partials/*.gohtml"))
 
 	handler.HandleFunc("/", HomeController)
-	handler.HandleFunc("/add", AddBlockController)
+	handler.HandleFunc("/block", BlockController)
 
-	fmt.Printf("Listening on http://localhost%s\n", port)
+	fmt.Printf("Listening on http://localhost%s HTML Explorer✨ \n", port)
 
 	log.Fatal(http.ListenAndServe(port, handler))
 }

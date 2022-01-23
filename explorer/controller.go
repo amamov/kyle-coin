@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/amamov/kyle-coin/blockchain"
+	"github.com/amamov/kyle-coin/utils"
 )
 
 type homeData struct {
@@ -11,20 +12,20 @@ type homeData struct {
 	Blocks    []*blockchain.Block
 }
 
-func HomeController(rw http.ResponseWriter, r *http.Request) {
+func HomeController(rw http.ResponseWriter, req *http.Request) {
 	data := homeData{"Home", blockchain.GetBlockChain().AllBlocks()}
-	templates.ExecuteTemplate(rw, "home", data)
+	utils.HandleErr(templates.ExecuteTemplate(rw, "home", data))
 }
 
-func AddBlockController(rw http.ResponseWriter, r *http.Request) {
-	switch r.Method {
+func BlockController(rw http.ResponseWriter, req *http.Request) {
+	switch req.Method {
 	case "GET":
-		templates.ExecuteTemplate(rw, "add", nil)
+		utils.HandleErr(templates.ExecuteTemplate(rw, "block", nil))
 	case "POST":
-		r.ParseForm()
-		blockData := r.Form.Get("blockData")
+		utils.HandleErr(req.ParseForm())
+		blockData := req.Form.Get("blockData")
 		blockchain.GetBlockChain().AddBlock(blockData)
-		http.Redirect(rw, r, "/", http.StatusPermanentRedirect)
+		http.Redirect(rw, req, "/", http.StatusPermanentRedirect)
 	default:
 		rw.WriteHeader(http.StatusMethodNotAllowed)
 	}
