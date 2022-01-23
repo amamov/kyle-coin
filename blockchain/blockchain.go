@@ -18,7 +18,7 @@ type blockchain struct {
 	blocks []*Block
 }
 
-var b *blockchain
+var bc *blockchain
 var once sync.Once
 
 func (block *Block) calculateHash() {
@@ -58,12 +58,12 @@ func (b *blockchain) GetBlock(height int) (*Block, error) {
 }
 
 func GetBlockChain() *blockchain {
-	if b == nil {
+	if bc == nil {
 		// once.Do(...) : 프로그램을 병렬적으로 실행했을때 "오직 한 번만 실행하도록 한다."
 		once.Do(func() {
-			b = &blockchain{}
-			b.AppendBlock("Genesis Block")
+			bc = &blockchain{}
+			bc.AppendBlock("Genesis Block")
 		})
 	}
-	return b
+	return bc
 }
