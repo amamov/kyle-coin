@@ -31,19 +31,29 @@ func defaultConsole() {
 	exitProgram()
 }
 
+func flagPort() int {
+	port := flag.Int("port", 4000, "Set port of the server")
+	return *port
+}
+
+func flagMode() string {
+	mode := flag.String("mode", REST_API_MODE, fmt.Sprintf("Choose between '%s' and '%s'", REST_API_MODE, HTML_MODE))
+	return *mode
+}
+
 func Start() {
 	// fmt.Println(os.Args)
 	// fmt.Println(reflect.TypeOf(os.Args)) // []string
 
-	port := flag.Int("port", 4000, "Set port of the server")
-	mode := flag.String("mode", REST_API_MODE, fmt.Sprintf("Choose between '%s' and '%s'", REST_API_MODE, HTML_MODE))
+	port := flagPort()
+	mode := flagMode()
 	flag.Parse()
 
-	switch *mode {
+	switch mode {
 	case REST_API_MODE:
-		restapi.Start(*port)
+		restapi.Start(port)
 	case HTML_MODE:
-		explorer.Start(*port)
+		explorer.Start(port)
 	default:
 		defaultConsole()
 	}
