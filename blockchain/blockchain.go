@@ -40,7 +40,7 @@ func createBlock(Data string) *Block {
 	return &newBlock
 }
 
-func (b *blockchain) AddBlock(Data string) {
+func (b *blockchain) AppendBlock(Data string) {
 	b.blocks = append(b.blocks, createBlock(Data))
 }
 
@@ -62,7 +62,7 @@ func GetBlockChain() *blockchain {
 		// once.Do(...) : 프로그램을 병렬적으로 실행했을때 "오직 한 번만 실행하도록 한다."
 		once.Do(func() {
 			b = &blockchain{}
-			b.AddBlock("Genesis Block")
+			b.AppendBlock("Genesis Block")
 		})
 	}
 	return b

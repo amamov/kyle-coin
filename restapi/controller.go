@@ -14,20 +14,20 @@ import (
 type url string
 
 // interface, interceptor
-func (u url) MarchalText() ([]byte, error) {
+func (u url) MarshalText() ([]byte, error) {
 	url := fmt.Sprintf("http://localhost%s%s", port, u)
 	return []byte(url), nil
 }
 
-type urlDescription struct {
+type apiDescription struct {
 	URL         url
 	Method      string `json:"method"` // json 포멧에서는 Method가 아니라 method로 보인다.
 	Description string `json:"description"`
 	Payload     string `json:"payload,omitempty"` // omitempty로 만일, Payload 값이 없다면 json 포멧에서 보여주지 않는다.
 }
 
-// func (ud urlDescription) String() string {
-// 	return ""
+// func (ad apiDescription) String() string {
+// 	return "Intercepted when printing an apiDescription object."
 // }
 
 type blockBodyForAppend struct {
@@ -39,7 +39,7 @@ type errorResponse struct {
 }
 
 func getDocsController(rw http.ResponseWriter, req *http.Request) {
-	data := []urlDescription{
+	apiDocs := []apiDescription{
 		{
 			URL:         url("/"),
 			Method:      "GET",
@@ -53,7 +53,7 @@ func getDocsController(rw http.ResponseWriter, req *http.Request) {
 		{
 			URL:         url("/blocks"),
 			Method:      "POST",
-			Description: "Add A Block",
+			Description: "Append A Block",
 			Payload:     "message:string",
 		},
 		{
@@ -62,21 +62,16 @@ func getDocsController(rw http.ResponseWriter, req *http.Request) {
 			Description: "See A Block",
 		},
 	}
-	// rw.Header().Add("Content-Type", "application/json") // 미들웨어로 뺌
 	// json.NewEncoder(rw).Encode(data) // 밑에 3줄을 한 줄로 쓴다면
-
-	b, err := json.Marshal(data) // Marshal : JSON으로 인코딩한 interface를 return한다.
+	apiDocsJsonByte, err := json.Marshal(apiDocs) // Marshal : JSON으로 인코딩한 interface를 return한다.
 	utils.HandleErr(err)
-	// fmt.Println(b)
-	// fmt.Printf("%s", b)
-	fmt.Fprintf(rw, "%s", b)
+	fmt.Fprintf(rw, "%s", apiDocsJsonByte)
 }
 
 func appendBlockController(rw http.ResponseWriter, req *http.Request) {
 	var blockBody blockBodyForAppend
 	utils.HandleErr(json.NewDecoder(req.Body).Decode(&blockBody))
-	// fmt.Println(blockBody)
-	blockchain.GetBlockChain().AddBlock(blockBody.Message)
+	blockchain.GetBlockChain().AppendBlock(blockBody.Message)
 	rw.WriteHeader(http.StatusCreated) // 201
 }
 
